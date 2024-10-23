@@ -1,75 +1,70 @@
-import React, { useState, useEffect } from "react";
-import "./style.css";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Drawer,
+  List,
+  ListItem,
+  Box,
+} from "@mui/material";
 
-const apiURL = "https://rickandmortyapi.com/api/character";
+import Home from "./pages/Home";
+import Heroes from "./pages/Heroes";
+import Hero from "./pages/Hero";
+import About from "./pages/About";
+import ThemeSwitcher from "./components/ThemeSwitcher";
 
 function App() {
-  const [characters, setCharacters] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const [prevPageAvailable, setPrevPageAvailable] = useState(false);
-  const [nextPageAvailable, setNextPageAvailable] = useState(false);
-
-  useEffect(() => {
-    fetchCharacters(currentPage);
-  }, [currentPage]);
-
-  const fetchCharacters = async (page) => {
-    setLoading(true);
-    try {
-      const response = await fetch(`${apiURL}?page=${page}`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      setCharacters(data.results);
-      setTotalPages(data.info.pages);
-      setPrevPageAvailable(data.info.prev !== null); 
-      setNextPageAvailable(data.info.next !== null);
-      setLoading(false);
-    } catch (error) {
-      console.error("Помилка завантаження даних:", error);
-      setLoading(false);
-    }
-  };
-
-  const handlePrevClick = () => {
-    if (prevPageAvailable) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const handleNextClick = () => {
-    if (nextPageAvailable) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
   return (
-    <div>
-      <h1>Rick & Morty Characters</h1>
-      <div id="characters">
-        {characters.map((character) => (
-          <div key={character.id} className="character">
-            <img src={character.image} alt={character.name} width="100" />
-            <p>{character.name}</p>
-          </div>
-        ))}
+    <Router>
+      <div style={{ display: "flex" }}>
+        <Drawer
+          variant="permanent"
+          sx={{
+            width: 40,
+            flexShrink: 0,
+          }}
+        >
+          <List>
+            <ListItem>
+              <Link to="/">Home</Link>
+            </ListItem>
+            <ListItem>
+              <Link to="/heroes">Heroes</Link>
+            </ListItem>
+            <ListItem>
+              <Link to="/about">About</Link>
+            </ListItem>
+          </List>
+        </Drawer>
+
+        <main style={{ marginLeft: 40, padding: "16px", width: "100%" }}>
+          <Box sx={{ display: "flex", justifyContent: "center", my: 1 }}>
+            <ThemeSwitcher />
+          </Box>
+
+          <AppBar position="static">
+            <Toolbar sx={{ justifyContent: "center" }}>
+              <Typography
+                variant="h6"
+                sx={{ flexGrow: 1, textAlign: "center", my: 1 }}
+              >
+                Rick & Morty
+              </Typography>
+            </Toolbar>
+          </AppBar>
+
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/heroes" element={<Heroes />} />
+            <Route path="/heroes/:id" element={<Hero />} />
+            <Route path="/about" element={<About />} />
+          </Routes>
+        </main>
       </div>
-      {loading && <p>Loading...</p>}
-      <div>
-        <button onClick={handlePrevClick} disabled={!prevPageAvailable}>
-          Prev
-        </button>
-        <span id="pageNumber">
-          Page {currentPage} of {totalPages}
-        </span>
-        <button onClick={handleNextClick} disabled={!nextPageAvailable}>
-          Next
-        </button>
-      </div>
-    </div>
+    </Router>
   );
 }
 
