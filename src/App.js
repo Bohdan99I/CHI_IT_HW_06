@@ -9,12 +9,11 @@ import {
   ListItem,
   Box,
 } from "@mui/material";
-
 import Home from "./pages/Home";
 import Heroes from "./pages/Heroes";
-import Hero from "./pages/Hero";
 import About from "./pages/About";
 import ThemeSwitcher from "./components/ThemeSwitcher";
+import HeroBackButton from "./components/HeroBackButton";
 
 function App() {
   return (
@@ -59,7 +58,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/heroes" element={<Heroes />} />
-            <Route path="/heroes/:id" element={<Hero />} />
+            <Route path="/heroes/:id" element={<HeroBackButton />} />
             <Route path="/about" element={<About />} />
           </Routes>
         </main>

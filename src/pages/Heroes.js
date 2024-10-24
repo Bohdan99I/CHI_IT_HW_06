@@ -55,6 +55,9 @@ function Heroes() {
           sx={{
             backgroundColor: "#fff",
             color: "#000",
+            "& .MuiDataGrid-row:hover": {
+              backgroundColor: "lightgreen",
+            },
           }}
         />
       )}
