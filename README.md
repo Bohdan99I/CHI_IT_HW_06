@@ -35,8 +35,9 @@
 
 Приклад обробника кліка:
 
-````javascript
-onRowClick={handleRowClick} // Обробник кліка по рядку
+```javascript
+onRowClick = { handleRowClick }; // Обробник кліка по рядку
+```
 
 ## 5. Перемикач теми
 
@@ -49,4 +50,4 @@ sx={{
   '& .MuiDataGrid-row': { backgroundColor: 'lightblue' }, // Колір фону для всіх рядків
   '& .MuiDataGrid-row:hover': { backgroundColor: 'lightgreen' }, // Колір при наведенні
 }}
-````
+```
