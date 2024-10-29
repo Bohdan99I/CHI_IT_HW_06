@@ -18,7 +18,7 @@ function Heroes() {
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [selectedHero, setSelectedHero] = useState(null); // Додаємо стан для вибраного героя
+  const [selectedHero, setSelectedHero] = useState(null); 
   const navigate = useNavigate();
 
   useEffect(() => {
