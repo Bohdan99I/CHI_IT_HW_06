@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import { Button, CircularProgress, Box } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  Box,
+  Drawer,
+  Typography,
+  IconButton,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import CloseIcon from "@mui/icons-material/Close";
 
 const apiURL = "https://rickandmortyapi.com/api/character";
 
@@ -10,6 +18,7 @@ function Heroes() {
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [selectedHero, setSelectedHero] = useState(null); // Додаємо стан для вибраного героя
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,38 +46,88 @@ function Heroes() {
   ];
 
   const handleRowClick = (params) => {
-    navigate(`/heroes/${params.id}`);
+    const heroId = params.id;
+    fetchHero(heroId);
+  };
+
+  const fetchHero = async (id) => {
+    try {
+      const response = await fetch(`${apiURL}/${id}`);
+      const data = await response.json();
+      setSelectedHero(data);
+    } catch (error) {
+      console.error("Error fetching hero:", error);
+    }
+  };
+
+  const handleClose = () => {
+    setSelectedHero(null);
   };
 
   return (
-    <Box sx={{ height: 500, width: "100%", textAlign: "center" }}>
-      {loading ? (
-        <CircularProgress />
-      ) : (
-        <DataGrid
-          rows={characters}
-          columns={columns}
-          pageSize={20}
-          rowsPerPageOptions={[20]}
-          onRowClick={handleRowClick}
-          disableSelectionOnClick
-          sx={{
-            backgroundColor: "#fff",
-            color: "#000",
-            "& .MuiDataGrid-row:hover": {
-              backgroundColor: "lightgreen",
-            },
+    <Box sx={{ display: "flex", width: "100%" }}>
+      <Box sx={{ flex: 1, height: 500, textAlign: "center" }}>
+        {loading ? (
+          <CircularProgress />
+        ) : (
+          <DataGrid
+            rows={characters}
+            columns={columns}
+            pageSize={20}
+            rowsPerPageOptions={[20]}
+            onRowClick={handleRowClick}
+            disableSelectionOnClick
+            sx={{
+              backgroundColor: "#fff",
+              color: "#000",
+              "& .MuiDataGrid-row:hover": {
+                backgroundColor: "lightgreen",
+              },
+            }}
+          />
+        )}
+        {!loading && currentPage < totalPages && (
+          <Button
+            variant="contained"
+            onClick={() => setCurrentPage(currentPage + 1)}
+            sx={{ mt: 2 }}
+          >
+            Load More
+          </Button>
+        )}
+      </Box>
+
+      {selectedHero && (
+        <Drawer
+          anchor="right"
+          open={Boolean(selectedHero)}
+          onClose={handleClose}
+          sx={{ width: 300, flexShrink: 0 }}
+          PaperProps={{
+            sx: { width: 300, padding: 2 },
           }}
-        />
-      )}
-      {!loading && currentPage < totalPages && (
-        <Button
-          variant="contained"
-          onClick={() => setCurrentPage(currentPage + 1)}
-          sx={{ mt: 2 }}
         >
-          Load More
-        </Button>
+          <IconButton onClick={handleClose} sx={{ alignSelf: "flex-end" }}>
+            <CloseIcon />
+          </IconButton>
+          <Box textAlign="center">
+            <img
+              src={selectedHero.image}
+              alt={selectedHero.name}
+              width="100%"
+            />
+            <Typography variant="h4">{selectedHero.name}</Typography>
+            <Typography variant="body1">
+              Status: {selectedHero.status}
+            </Typography>
+            <Typography variant="body1">
+              Species: {selectedHero.species}
+            </Typography>
+            <Typography variant="body1">
+              Gender: {selectedHero.gender}
+            </Typography>
+          </Box>
+        </Drawer>
       )}
     </Box>
   );
