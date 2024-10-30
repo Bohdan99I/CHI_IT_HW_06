@@ -1,22 +1,12 @@
 import React from "react";
-import { createTheme, ThemeProvider, CssBaseline, Switch } from "@mui/material";
-import { useState } from "react";
+import { Switch } from "@mui/material";
 
-function ThemeSwitcher() {
-  const [darkMode, setDarkMode] = useState(false);
+const ThemeSwitcher = ({ setDarkMode }) => {
+  const handleToggle = (event) => {
+    setDarkMode(event.target.checked);
+  };
 
-  const theme = createTheme({
-    palette: {
-      mode: darkMode ? "dark" : "light",
-    },
-  });
-
-  return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Switch checked={darkMode} onChange={() => setDarkMode(!darkMode)} />
-    </ThemeProvider>
-  );
-}
+  return <Switch onChange={handleToggle} color="default" />;
+};
 
 export default ThemeSwitcher;

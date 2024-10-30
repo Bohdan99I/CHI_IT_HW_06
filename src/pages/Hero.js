@@ -20,22 +20,22 @@ function Hero() {
       setHero(data);
       setLoading(false);
     } catch (error) {
-      console.error("Помилка завантаження персонажа:", error);
+      console.error("Error loading character:", error);
       setLoading(false);
     }
   };
 
   return (
-    <Box>
+    <Box sx={{ textAlign: "center", mt: 4 }}>
       {loading ? (
         <CircularProgress />
       ) : (
-        <div>
-          <img src={hero.image} alt={hero.name} />
+        <Box>
+          <img src={hero.image} alt={hero.name} width="100%" />
           <Typography variant="h4">{hero.name}</Typography>
-          <Typography variant="body1">{hero.status}</Typography>
-          <Typography variant="body1">{hero.species}</Typography>
-        </div>
+          <Typography variant="body1">Status: {hero.status}</Typography>
+          <Typography variant="body1">Species: {hero.species}</Typography>
+        </Box>
       )}
     </Box>
   );

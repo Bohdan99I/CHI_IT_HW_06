@@ -7,8 +7,8 @@ import {
   Drawer,
   Typography,
   IconButton,
+  useTheme,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 import CloseIcon from "@mui/icons-material/Close";
 
 const apiURL = "https://rickandmortyapi.com/api/character";
@@ -18,8 +18,9 @@ function Heroes() {
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [selectedHero, setSelectedHero] = useState(null); 
-  const navigate = useNavigate();
+  const [selectedHero, setSelectedHero] = useState(null);
+
+  const theme = useTheme(); 
 
   useEffect(() => {
     fetchCharacters(currentPage);
@@ -66,7 +67,7 @@ function Heroes() {
 
   return (
     <Box sx={{ display: "flex", width: "100%" }}>
-      <Box sx={{ flex: 1, height: 500, textAlign: "center" }}>
+      <Box sx={{ flex: 1, height: 500, textAlign: "center", p: 2 }}>
         {loading ? (
           <CircularProgress />
         ) : (
@@ -78,8 +79,8 @@ function Heroes() {
             onRowClick={handleRowClick}
             disableSelectionOnClick
             sx={{
-              backgroundColor: "#fff",
-              color: "#000",
+              backgroundColor: theme.palette.background.default, 
+              color: theme.palette.text.primary, 
               "& .MuiDataGrid-row:hover": {
                 backgroundColor: "lightgreen",
               },
@@ -104,7 +105,11 @@ function Heroes() {
           onClose={handleClose}
           sx={{ width: 300, flexShrink: 0 }}
           PaperProps={{
-            sx: { width: 300, padding: 2 },
+            sx: {
+              width: 300,
+              padding: 2,
+              bgcolor: theme.palette.background.paper,
+            },
           }}
         >
           <IconButton onClick={handleClose} sx={{ alignSelf: "flex-end" }}>
@@ -116,14 +121,16 @@ function Heroes() {
               alt={selectedHero.name}
               width="100%"
             />
-            <Typography variant="h4">{selectedHero.name}</Typography>
-            <Typography variant="body1">
+            <Typography variant="h4" color="text.primary">             
+              {selectedHero.name}
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
               Status: {selectedHero.status}
             </Typography>
-            <Typography variant="body1">
+            <Typography variant="body1" color="text.secondary">
               Species: {selectedHero.species}
             </Typography>
-            <Typography variant="body1">
+            <Typography variant="body1" color="text.secondary">
               Gender: {selectedHero.gender}
             </Typography>
           </Box>

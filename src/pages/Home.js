@@ -1,13 +1,13 @@
 import React from "react";
-import { Typography } from "@mui/material";
+import { Typography, Box } from "@mui/material";
 
 function Home() {
   return (
-    <div>
-      <Typography sx={{ justifyContent: "center" }} variant="h4">
+    <Box textAlign="center" sx={{ mt: 4 }}>
+      <Typography variant="h4" sx={{ justifyContent: "center" }}>
         Welcome to the Rick & Morty App!
       </Typography>
-    </div>
+    </Box>
   );
 }
 
