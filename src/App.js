@@ -4,7 +4,7 @@ import {
   Routes,
   Route,
   Link as RouterLink,
-} from "react-router-dom"; // Імпортуємо Link як RouterLink
+} from "react-router-dom"; 
 import {
   AppBar,
   Toolbar,
