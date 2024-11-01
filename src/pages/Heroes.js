@@ -1,15 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import {
-  Button,
-  CircularProgress,
-  Box,
-  Drawer,
-  Typography,
-  IconButton,
-  useTheme,
-} from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import { CircularProgress, Box, useTheme } from "@mui/material";
+import { Outlet, useNavigate } from "react-router-dom";
+import LoadMoreButton from "../components/LoadMoreButton";
 
 const apiURL = "https://rickandmortyapi.com/api/character";
 
@@ -18,9 +11,9 @@ function Heroes() {
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [selectedHero, setSelectedHero] = useState(null);
 
-  const theme = useTheme(); 
+  const theme = useTheme();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchCharacters(currentPage);
@@ -47,22 +40,7 @@ function Heroes() {
   ];
 
   const handleRowClick = (params) => {
-    const heroId = params.id;
-    fetchHero(heroId);
-  };
-
-  const fetchHero = async (id) => {
-    try {
-      const response = await fetch(`${apiURL}/${id}`);
-      const data = await response.json();
-      setSelectedHero(data);
-    } catch (error) {
-      console.error("Error fetching hero:", error);
-    }
-  };
-
-  const handleClose = () => {
-    setSelectedHero(null);
+    navigate(`${params.id}`);
   };
 
   return (
@@ -79,63 +57,30 @@ function Heroes() {
             onRowClick={handleRowClick}
             disableSelectionOnClick
             sx={{
-              backgroundColor: theme.palette.background.default, 
-              color: theme.palette.text.primary, 
+              backgroundColor: theme.palette.background.default,
+              color: theme.palette.text.primary,
               "& .MuiDataGrid-row:hover": {
                 backgroundColor: "lightgreen",
               },
             }}
           />
         )}
-        {!loading && currentPage < totalPages && (
-          <Button
-            variant="contained"
-            onClick={() => setCurrentPage(currentPage + 1)}
-            sx={{ mt: 2 }}
-          >
-            Load More
-          </Button>
-        )}
+        <LoadMoreButton
+          onClick={() => setCurrentPage(currentPage + 1)}
+          show={!loading && currentPage < totalPages}
+        />
       </Box>
-
-      {selectedHero && (
-        <Drawer
-          anchor="right"
-          open={Boolean(selectedHero)}
-          onClose={handleClose}
-          sx={{ width: 300, flexShrink: 0 }}
-          PaperProps={{
-            sx: {
-              width: 300,
-              padding: 2,
-              bgcolor: theme.palette.background.paper,
-            },
-          }}
-        >
-          <IconButton onClick={handleClose} sx={{ alignSelf: "flex-end" }}>
-            <CloseIcon />
-          </IconButton>
-          <Box textAlign="center">
-            <img
-              src={selectedHero.image}
-              alt={selectedHero.name}
-              width="100%"
-            />
-            <Typography variant="h4" color="text.primary">             
-              {selectedHero.name}
-            </Typography>
-            <Typography variant="body1" color="text.secondary">
-              Status: {selectedHero.status}
-            </Typography>
-            <Typography variant="body1" color="text.secondary">
-              Species: {selectedHero.species}
-            </Typography>
-            <Typography variant="body1" color="text.secondary">
-              Gender: {selectedHero.gender}
-            </Typography>
-          </Box>
-        </Drawer>
-      )}
+      <Box
+        sx={{
+          width: 300,
+          p: 2,
+          boxSizing: "border-box",
+          overflowY: "auto",
+          bgcolor: theme.palette.background.paper,
+        }}
+      >
+        <Outlet />
+      </Box>
     </Box>
   );
 }
