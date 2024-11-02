@@ -16,22 +16,30 @@ function Heroes() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchCharacters(currentPage);
-  }, [currentPage]);
+    let isCancelled = false;
 
-  const fetchCharacters = async (page) => {
-    setLoading(true);
-    try {
-      const response = await fetch(`${apiURL}?page=${page}`);
-      const data = await response.json();
-      setCharacters((prev) => [...prev, ...data.results]);
-      setTotalPages(data.info.pages);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching characters:", error);
-      setLoading(false);
-    }
-  };
+    const fetchCharacters = async (page) => {
+      setLoading(true);
+      try {
+        const response = await fetch(`${apiURL}?page=${page}`);
+        const data = await response.json();
+        if (!isCancelled) {
+          setCharacters((prev) => [...prev, ...data.results]);
+          setTotalPages(data.info.pages);
+        }
+      } catch (error) {
+        console.error("Error fetching characters:", error);
+      } finally {
+        if (!isCancelled) setLoading(false);
+      }
+    };
+
+    fetchCharacters(currentPage);
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [currentPage]);
 
   const columns = [
     { field: "id", headerName: "ID", width: 90 },
@@ -66,7 +74,11 @@ function Heroes() {
           />
         )}
         <LoadMoreButton
-          onClick={() => setCurrentPage(currentPage + 1)}
+          onClick={() => {
+            if (currentPage < totalPages) {
+              setCurrentPage((prevPage) => prevPage + 1);
+            }
+          }}
           show={!loading && currentPage < totalPages}
         />
       </Box>
