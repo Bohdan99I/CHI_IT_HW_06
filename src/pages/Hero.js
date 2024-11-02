@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Typography, Box, CircularProgress } from "@mui/material";
+import { Typography, Box, CircularProgress, useTheme } from "@mui/material";
 
 const apiURL = "https://rickandmortyapi.com/api/character";
 
@@ -8,6 +8,7 @@ function Hero() {
   const { id } = useParams();
   const [hero, setHero] = useState(null);
   const [loading, setLoading] = useState(true);
+  const theme = useTheme();
 
   useEffect(() => {
     fetchHero();
@@ -26,7 +27,7 @@ function Hero() {
   };
 
   return (
-    <Box sx={{ textAlign: "center", mt: 4 }}>     
+    <Box sx={{ textAlign: "center", mt: 4, color: theme.palette.text.primary }}>
       {loading ? (
         <CircularProgress />
       ) : (
