@@ -11,6 +11,7 @@ function Heroes() {
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [error, setError] = useState(null);
 
   const theme = useTheme();
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ function Heroes() {
 
     const fetchCharacters = async (page) => {
       setLoading(true);
+      setError(null);
       try {
         const response = await fetch(`${apiURL}?page=${page}`);
         const data = await response.json();
@@ -28,6 +30,7 @@ function Heroes() {
           setTotalPages(data.info.pages);
         }
       } catch (error) {
+        if (!isCancelled) setError("Error fetching characters");
         console.error("Error fetching characters:", error);
       } finally {
         if (!isCancelled) setLoading(false);
@@ -56,6 +59,10 @@ function Heroes() {
       <Box sx={{ flex: 1, height: 500, textAlign: "center", p: 2 }}>
         {loading ? (
           <CircularProgress />
+        ) : error ? (
+          <Typography variant="body1" color="error">
+            {error}
+          </Typography>
         ) : (
           <DataGrid
             rows={characters}
